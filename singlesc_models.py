@@ -7,6 +7,48 @@ import numpy as np
 import time
 import math
 
+class SingleSentenceEncoder_BERT(torch.nn.Module):
+    """
+    Single Sentence encoder based on a BERT kind encoder. 
+    Single sentence means that each sentence is encoded in a 
+    individual way, i.e, it doesn't take in account other sentences in the 
+    same document.
+    The sentence encoder must be a pre-trained model based on BERT architecture 
+    like BERT, RoBERTa and ALBERT.
+    """
+    def __init__(self, encoder_id, embedding_dim):
+        '''
+        This model comprises only a pre-trained sentence encoder, which must be 
+        a model following BERT architecture.  
+        Arguments:
+            encoder_id: ID (string) of the encoder model in Hugging Faces repository.
+            embedding_dim: dimension of hidden units in the sentence encoder (e.g., 768 for BERT).
+        '''
+        super(SingleSentenceEncoder_BERT, self).__init__()
+        self.encoder = transformers.AutoModel.from_pretrained(encoder_id)
+
+    def forward(self, input_ids, attention_mask):
+        '''
+        Each call to this method encodes a batch of sentences. Each sentence is 
+        individually encoded. This means the encoder doesn't take in account 
+        other sentences from the source document when it encodes a sentence. 
+        This method adopts the hidden state of the [CLS] token of the last BERT layer as 
+        sentence representation and so it returns a batch of such representations.
+        Arguments:
+            input_ids : tensor of shape (batch_size, seq_len)
+            attention_mask : tensor of shape (batch_size, seq_len)
+        Returns:
+            embeddings : tensor of shape (n of sentences in batch, embedding_dim)
+        '''
+        output = self.encoder(
+            input_ids=input_ids,             # input_ids.shape: (batch_size, seq_len)
+            attention_mask=attention_mask    # attention_mask.shape: (batch_size, seq_len)
+        )
+        hidden_state = output.last_hidden_state    # hidden states of last encoder's layer => shape: (batch_size, seq_len, embedding_dim)
+        cls_embeddings = hidden_state[:, 0]        # hidden states of the CLS tokens from the last layer => shape: (batch_size, embedding_dim)
+
+        return cls_embeddings
+
 class SingleSC_BERT(torch.nn.Module):
     """
     Single Sentence Classifier based on a BERT kind encoder. 
@@ -28,16 +70,13 @@ class SingleSC_BERT(torch.nn.Module):
             embedding_dim: dimension of hidden units in the sentence encoder (e.g., 768 for BERT).
         '''
         super(SingleSC_BERT, self).__init__()
-        self.encoder = transformers.AutoModel.from_pretrained(encoder_id)
+        #self.encoder = transformers.AutoModel.from_pretrained(encoder_id)
+        self.encoder = SingleSentenceEncoder_BERT(encoder_id, embedding_dim)
         dropout = torch.nn.Dropout(dropout_rate)
         n_classes = n_classes
-        sequence_layers = []
-        
         dense_out = torch.nn.Linear(embedding_dim, n_classes)
         torch.nn.init.xavier_uniform_(dense_out.weight)
         self.classifier = torch.nn.Sequential(dropout, dense_out)
-        #sequence_layers.extend([dropout, dense_out])
-        #self.classifier = torch.nn.Sequential(*sequence_layers)
 
     def forward(self, input_ids, attention_mask):
         '''
@@ -51,12 +90,18 @@ class SingleSC_BERT(torch.nn.Module):
         Returns:
             logits : tensor of shape (n of sentences in batch, n of classes)
         '''
+        '''
         output_1 = self.encoder(
             input_ids=input_ids,             # input_ids.shape: (batch_size, seq_len)
             attention_mask=attention_mask    # attention_mask.shape: (batch_size, seq_len)
         )
         hidden_state = output_1.last_hidden_state  # hidden states of last encoder's layer => shape: (batch_size, seq_len, embedd_dim)
         cls_embeddings = hidden_state[:, 0]        # hidden states of the CLS tokens from the last layer => shape: (batch_size, embedd_dim)
+        '''
+        cls_embeddings = self.encoder(
+            input_ids=input_ids,             # input_ids.shape: (batch_size, seq_len)
+            attention_mask=attention_mask    # attention_mask.shape: (batch_size, seq_len)
+        )
         logits = self.classifier(cls_embeddings)   # logits.shape: (batch_size, num of classes)
 
         return logits
