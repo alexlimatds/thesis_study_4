@@ -1,0 +1,46 @@
+RESULTS REPORT (SINGLE SENTENCE CLASSIFICATION)
+Model: InCaseLaw
+Encoder: law-ai/InCaseLawBERT
+Evaluation: test set (1 random seeds)
+Max sequence length: 512
+Batch size: 16
+Dropout rate: 0.2
+Learning rate: 1e-05
+Freeze layers: False
+Adam Epsilon: 1e-08
+Weight decay: 0.001
+Train time: 00h08m40s
+GPU name: Tesla V100-SXM2-16GB
+GPU memory: 15.78
+
+Averages:
+Epoch Train loss   std    Test loss   std    P (macro) P std  R (macro) R std  F1 (macro) F1 std
+  1    1.245459  0.000000  1.019675 0.000000   0.6391  0.0000   0.5904  0.0000   0.5876   0.0000
+
+*** Detailed report ***
+
+Confusion matrices
+------------------
+Fact: 0 
+Argument: 1 
+Statute: 2 
+Precedent: 3 
+RulingByLowerCourt: 4 
+RulingByPresentCourt: 5 
+RatioOfTheDecision: 6 
+=> Iteration 0:
+Epoch 1:
+[[305  12   2   8   5   4  56]
+ [ 19 224   3  25   3   0  42]
+ [  9   1 129   9   0   0  53]
+ [ 43  11  10 213   2   1 121]
+ [ 34   7   4  16  18  13  30]
+ [  2   1   0   0   0  24  10]
+ [ 62  43   8  76   1  12 423]]
+
+Scores
+------
+Epoch: 1
+             Train loss  Test loss  P (macro)  R (macro)  F1 (macro)
+Iteration 0    1.245459   1.019675   0.639146   0.590411     0.58757
+
