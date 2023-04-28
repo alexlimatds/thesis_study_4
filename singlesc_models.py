@@ -70,7 +70,6 @@ class SingleSC_BERT(torch.nn.Module):
             embedding_dim: dimension of hidden units in the sentence encoder (e.g., 768 for BERT).
         '''
         super(SingleSC_BERT, self).__init__()
-        #self.encoder = transformers.AutoModel.from_pretrained(encoder_id)
         self.encoder = SingleSentenceEncoder_BERT(encoder_id, embedding_dim)
         dropout = torch.nn.Dropout(dropout_rate)
         n_classes = n_classes
