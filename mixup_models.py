@@ -244,7 +244,7 @@ def mixup(xi, xj, yi, yj, alpha):
     y_hat = lam_y * yi + (1 - lam_y) * yj
     return x_hat, y_hat
 
-def augment_data(alpha, X, Y, classes_to_agument, agumentation_rate):
+def augment_data(alpha, X, Y, classes_to_agument, augmentation_rate):
     """
     Generates a set of synthetic embedding vectors from the sentences in a provided set of 
     documents. The sentences are selected at random. It uses sentences of different 
@@ -253,6 +253,8 @@ def augment_data(alpha, X, Y, classes_to_agument, agumentation_rate):
         alpha: hyperparameter of the beta distribution to be used with the mixup algorithm.
         X : embedding vectors. PyTorch tensor of shape (n_sentences, embedding_dim).
         Y : one-hot encoded target vectors. PyTorch tensor of shape (n_sentences, n_classes).
+        classes_to_agument: classes whose vectors will be used to augment data. List of string.
+        augmentation_rate: rate employed to calculate the number of augmented vectors for each class. Float.
     Returns:
         The generated feature vectors. PyTorch tensor of shape (n_generated_vectors, embedding_dim).
         The generated target vectors PyTorch tensor of shape (n_generated_vectors, n_classes).
@@ -262,7 +264,7 @@ def augment_data(alpha, X, Y, classes_to_agument, agumentation_rate):
     for idx_target_class in classes_to_agument:
         # selecting vectors to support data augmentation
         n_synthetic = math.ceil(
-            agumentation_rate * torch.count_nonzero(Y == idx_target_class).item()
+            augmentation_rate * torch.count_nonzero(Y == idx_target_class).item()
         )
         # random indexes for the target class
         idx_i = random.choices(

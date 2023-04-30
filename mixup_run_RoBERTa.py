@@ -11,12 +11,12 @@ MIXUP_ALPHA = 0.1
 AUGMENTATION_RATE = 0.5  # augmentation rate for pointed classes
 CLASSES_TO_AUGMENT = ['Precedent', 'RulingByLowerCourt']
 
-N_EPOCHS_ENCODER = 1
-STOP_EPOCH_ENCODER = 1
+N_EPOCHS_ENCODER = 4
+STOP_EPOCH_ENCODER = 4
 LEARNING_RATE_ENCODER = 1e-5
 
-N_EPOCHS_CLASSIFIER = 100
-LEARNING_RATE_CLASSIFIER = 1e-3
+N_EPOCHS_CLASSIFIER = 300
+LEARNING_RATE_CLASSIFIER = 1e-2
 
 train_params = {}
 train_params['encoder_id'] = ENCODER_ID
@@ -37,7 +37,7 @@ train_params['weight_decay'] = 1e-3
 train_params['eps'] = 1e-8
 
 #train_params['n_documents'] = 1
-train_params['n_iterations'] = 1
+train_params['n_iterations'] = 5
 train_params['use_mock'] = False
 
 mixup_app.evaluate_BERT(train_params)
