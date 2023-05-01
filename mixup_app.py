@@ -118,13 +118,15 @@ def evaluate_BERT(train_params):
             [labels_to_idx[l] for l in train_params['classes_to_augment']], 
             dtype=torch.long
         )
+        classes_to_agument_one_hot = torch.nn.functional.one_hot(classes_to_agument, num_classes=n_classes).type(torch.float)
+        
         start_enc = time.perf_counter()
         alpha = train_params['mixup_alpha']
         X_hat, Y_hat = mixup_models.augment_data(
             alpha, 
             train_embeddings, 
             train_one_hot_targets, 
-            classes_to_agument, 
+            classes_to_agument_one_hot, 
             train_params['augmentation_rate']
         )
         # joining mixup and sentence embeddings

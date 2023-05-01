@@ -253,7 +253,7 @@ def augment_data(alpha, X, Y, classes_to_agument, augmentation_rate):
         alpha: hyperparameter of the beta distribution to be used with the mixup algorithm.
         X : embedding vectors. PyTorch tensor of shape (n_sentences, embedding_dim).
         Y : one-hot encoded target vectors. PyTorch tensor of shape (n_sentences, n_classes).
-        classes_to_agument: classes whose vectors will be used to augment data. List of string.
+        classes_to_agument: One-hot vectors of the classes whose vectors will be used to augment data. PyTorch tensor of shape (n classes to agument, n_classes).
         augmentation_rate: rate employed to calculate the number of augmented vectors for each class. Float.
     Returns:
         The generated feature vectors. PyTorch tensor of shape (n_generated_vectors, embedding_dim).
@@ -264,18 +264,12 @@ def augment_data(alpha, X, Y, classes_to_agument, augmentation_rate):
     for idx_target_class in classes_to_agument:
         # selecting vectors to support data augmentation
         n_synthetic = math.ceil(
-            augmentation_rate * torch.count_nonzero(Y == idx_target_class).item()
+            augmentation_rate * (Y == idx_target_class).all(dim=1).count_nonzero().item()
         )
-        # random indexes for the target class
-        idx_i = random.choices(
-            (Y == idx_target_class).nonzero(), 
-            k=n_synthetic
-        )
-        # random indexes for other classes
-        idx_j = random.choices(
-            (Y != idx_target_class).nonzero(), 
-            k=n_synthetic
-        )
+        idx_target = (Y == idx_target_class).all(dim=1).nonzero().squeeze().tolist()
+        idx_other = [i for i in range(Y.shape[0]) if i not in idx_target]
+        idx_i = random.sample(idx_target, k=n_synthetic) # random indexes for the target class
+        idx_j = random.sample(idx_other, k=n_synthetic)  # random indexes for other classes
         # getting source vectors to generate the augmented vectors
         # target class
         x_i = X[idx_i, :]

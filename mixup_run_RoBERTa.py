@@ -9,13 +9,13 @@ DROPOUT_RATE = 0.2
 
 MIXUP_ALPHA = 0.1
 AUGMENTATION_RATE = 0.5  # augmentation rate for pointed classes
-CLASSES_TO_AUGMENT = ['Precedent', 'RulingByLowerCourt']
+CLASSES_TO_AUGMENT = ['Argument', 'Statute', 'Precedent', 'RulingByLowerCourt', 'RulingByPresentCourt']
 
 N_EPOCHS_ENCODER = 4
 STOP_EPOCH_ENCODER = 4
 LEARNING_RATE_ENCODER = 1e-5
 
-N_EPOCHS_CLASSIFIER = 300
+N_EPOCHS_CLASSIFIER = 200
 LEARNING_RATE_CLASSIFIER = 1e-2
 
 train_params = {}
