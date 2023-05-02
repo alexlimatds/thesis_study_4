@@ -15,8 +15,7 @@ N_EPOCHS_ENCODER = 4
 STOP_EPOCH_ENCODER = 1
 LEARNING_RATE_ENCODER = 1e-5
 
-#N_EPOCHS_CLASSIFIER = 200
-N_EPOCHS_CLASSIFIER = 5
+N_EPOCHS_CLASSIFIER = 200
 LEARNING_RATE_CLASSIFIER = 1e-2
 
 train_params = {}
@@ -37,9 +36,8 @@ train_params['classes_to_augment'] = CLASSES_TO_AUGMENT
 train_params['weight_decay'] = 1e-3
 train_params['eps'] = 1e-8
 
-train_params['n_documents'] = 1
-#train_params['n_iterations'] = 5
-train_params['n_iterations'] = 1
+#train_params['n_documents'] = 1
+train_params['n_iterations'] = 5
 train_params['use_mock'] = False
 
 mixup_app.evaluate_BERT(train_params)

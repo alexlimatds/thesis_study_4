@@ -256,8 +256,10 @@ def augment_data(alpha, X, Y, classes_to_agument, augmentation_rate):
         classes_to_agument: One-hot vectors of the classes whose vectors will be used to augment data. PyTorch tensor of shape (n classes to agument, n_classes).
         augmentation_rate: rate employed to calculate the number of augmented vectors for each class. Float.
     Returns:
-        The generated feature vectors. PyTorch tensor of shape (n_generated_vectors, embedding_dim).
-        The generated target vectors PyTorch tensor of shape (n_generated_vectors, n_classes).
+        A tuple:
+            The generated feature vectors. PyTorch tensor of shape (n_generated_vectors, embedding_dim).
+            The generated target vectors PyTorch tensor of shape (n_generated_vectors, n_classes).
+        If Y does not include instances of the classes to augment, it returns (None, None).
     """
     X_aug, Y_aug = [], []
     n_classes = Y.shape[1]
@@ -267,21 +269,26 @@ def augment_data(alpha, X, Y, classes_to_agument, augmentation_rate):
             augmentation_rate * (Y == idx_target_class).all(dim=1).count_nonzero().item()
         )
         idx_target = (Y == idx_target_class).all(dim=1).nonzero().squeeze().tolist()
-        idx_other = [i for i in range(Y.shape[0]) if i not in idx_target]
-        idx_i = random.sample(idx_target, k=n_synthetic) # random indexes for the target class
-        idx_j = random.sample(idx_other, k=n_synthetic)  # random indexes for other classes
-        # getting source vectors to generate the augmented vectors
-        # target class
-        x_i = X[idx_i, :]
-        y_i = Y[idx_i, :]
-        # other classes
-        x_j = X[idx_j, :]
-        y_j = Y[idx_j, :]
-        # data augmentation
-        x_hat, y_hat = mixup(x_i, x_j, y_i, y_j, alpha)
-        X_aug.append(x_hat)
-        Y_aug.append(y_hat)
-    X_aug = torch.vstack(X_aug)
-    Y_aug = torch.vstack(Y_aug)
+        if isinstance(idx_target, list) and len(idx_target) > 0:
+            idx_other = [i for i in range(Y.shape[0]) if i not in idx_target]
+            idx_i = random.sample(idx_target, k=n_synthetic) # random indexes for the target class
+            idx_j = random.sample(idx_other, k=n_synthetic)  # random indexes for other classes
+            # getting source vectors to generate the augmented vectors
+            # target class
+            x_i = X[idx_i, :]
+            y_i = Y[idx_i, :]
+            # other classes
+            x_j = X[idx_j, :]
+            y_j = Y[idx_j, :]
+            # data augmentation
+            x_hat, y_hat = mixup(x_i, x_j, y_i, y_j, alpha)
+            X_aug.append(x_hat)
+            Y_aug.append(y_hat)
+    if len(X_aug) > 0:
+        X_aug = torch.vstack(X_aug)
+        Y_aug = torch.vstack(Y_aug)
+    else:
+        X_aug = None
+        Y_aug = None
     
     return X_aug, Y_aug
