@@ -8,8 +8,8 @@ BATCH_SIZE = 16
 DROPOUT_RATE = 0.2
 
 MIXUP_ALPHA = 0.1
-AUGMENTATION_RATE = 0.5  # augmentation rate for pointed classes
-CLASSES_TO_AUGMENT = ['Argument', 'Statute', 'Precedent', 'RulingByLowerCourt', 'RulingByPresentCourt']
+AUGMENTATION_RATE = 1.0  # augmentation rate for pointed classes
+CLASSES_TO_AUGMENT = ['Precedent', 'RulingByLowerCourt']
 
 N_EPOCHS = 4
 LEARNING_RATE = 1e-5
