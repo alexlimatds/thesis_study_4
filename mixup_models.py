@@ -271,8 +271,8 @@ def augment_data(alpha, X, Y, classes_to_agument, augmentation_rate):
         idx_target = (Y == idx_target_class).all(dim=1).nonzero().squeeze().tolist()
         if isinstance(idx_target, list) and len(idx_target) > 0:
             idx_other = [i for i in range(Y.shape[0]) if i not in idx_target]
-            idx_i = random.sample(idx_target, k=n_synthetic) # random indexes for the target class
-            idx_j = random.sample(idx_other, k=n_synthetic)  # random indexes for other classes
+            idx_i = random.sample(idx_target, k=n_synthetic) if n_synthetic <= len(idx_target) else random.choices(idx_target, k=n_synthetic) # random indexes for the target class
+            idx_j = random.sample(idx_other, k=n_synthetic)  if n_synthetic <= len(idx_other)  else random.choices(idx_other, k=n_synthetic)  # random indexes for other classes
             # getting source vectors to generate the augmented vectors
             # target class
             x_i = X[idx_i, :]
