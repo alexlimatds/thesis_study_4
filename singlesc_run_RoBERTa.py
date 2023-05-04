@@ -4,10 +4,11 @@ ENCODER_ID = 'roberta-base' # id from HuggingFace
 MODEL_REFERENCE = 'RoBERTa'
 MAX_SEQUENCE_LENGTH = 512
 EMBEDDING_DIM = 768
-N_EPOCHS = 4
 LEARNING_RATE = 1e-5
 BATCH_SIZE = 16
 DROPOUT_RATE = 0.2
+
+N_EPOCHS = 4
 
 train_params = {}
 train_params['max_seq_len'] = MAX_SEQUENCE_LENGTH
@@ -21,8 +22,10 @@ train_params['embedding_dim'] = EMBEDDING_DIM
 train_params['freeze_layers'] = False
 train_params['weight_decay'] = 1e-3
 train_params['eps'] = 1e-8
-train_params['n_documents'] = 1
-train_params['n_iterations'] = 5
+
+#train_params['n_documents'] = 2
+train_params['use_dev_set'] = True
+train_params['n_iterations'] = 1
 train_params['use_mock'] = False
 
 singlesc_app.evaluate_BERT(train_params)

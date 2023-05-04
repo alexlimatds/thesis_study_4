@@ -7,7 +7,7 @@ from datetime import datetime
 def evaluate_BERT(train_params):
     # time tag
     model_reference = train_params['model_reference']
-    time_tag = f'{model_reference}_{datetime.now().strftime("%Y-%m-%d-%Hh%Mmin")}'
+    time_tag = f'{model_reference}_{datetime.now().strftime("%Y-%m-%d-%Hh%Mm%Ss")}'
     train_params['time_tag'] = time_tag
     
     # setting labels
@@ -20,9 +20,12 @@ def evaluate_BERT(train_params):
     tokenizer = transformers.AutoTokenizer.from_pretrained(encoder_id)
     
     # loading data
-    dic_docs_train, _, dic_docs_test = malik.get_data()
+    dic_docs_train, dic_docs_dev, dic_docs_test = malik.get_data()
     
     # dataset objects
+    use_dev_set = train_params['use_dev_set']
+    if use_dev_set:
+        dic_docs_test = dic_docs_dev
     if train_params.get('n_documents') is not None: # used in tests to speed up the train procedure
         n_documents = train_params.get('n_documents')
         temp_docs_train = {k: dic_docs_train[k] for k in sorted(dic_docs_train.keys())[:n_documents]}
@@ -76,8 +79,9 @@ def evaluate_BERT(train_params):
     cv_time = time.strftime("%Hh%Mm%Ss", time.gmtime(cv_end - cv_start))
     print('End of evaluation. Total time:', cv_time)
     save_report(
-        metrics, raw_metrics, labels, 
-        confusion_matrices, f'test set ({len(seeds)} random seeds)', train_params, cv_time, device, time_tag
+        metrics, raw_metrics, labels, confusion_matrices, 
+        f'{"development set" if use_dev_set else "test set"} ({len(seeds)} random seeds)', 
+        train_params, cv_time, device, time_tag
     )
 
 def save_report(
