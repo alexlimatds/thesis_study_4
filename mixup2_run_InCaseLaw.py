@@ -8,7 +8,7 @@ BATCH_SIZE = 16
 DROPOUT_RATE = 0.2
 
 MIXUP_ALPHA = 1.0
-AUGMENTATION_RATE = 0.5  # augmentation rate for pointed classes
+AUGMENTATION_RATE = 1.0  # augmentation rate for pointed classes
 CLASSES_TO_AUGMENT = ['Fact', 'Argument', 'Statute', 'Precedent', 'RulingByLowerCourt', 'RulingByPresentCourt', 'RatioOfTheDecision']
 
 N_EPOCHS = 4
@@ -31,7 +31,7 @@ train_params['eps'] = 1e-8
 
 #train_params['n_documents'] = 1
 train_params['use_dev_set'] = False
-train_params['n_iterations'] = 1
+train_params['n_iterations'] = 5
 train_params['use_mock'] = False
 
 mixup2_app.evaluate_BERT(train_params)

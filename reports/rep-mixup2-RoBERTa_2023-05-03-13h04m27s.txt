@@ -1,0 +1,89 @@
+RESULTS REPORT (MIXUP 2 SINGLE SENTENCE CLASSIFICATION)
+Model: RoBERTa
+Encoder: roberta-base
+Evaluation: development set (1 random seeds)
+Max sequence length: 512
+Batch size: 16
+Dropout rate: 0.2
+Learning rate : 1e-05
+Number of epochs: 4
+Mixup alpha: 1.0
+Augmentation rate: 3.0
+Classes to augment: ['Precedent', 'RulingByLowerCourt']
+Average number of mixup vectors by epoch: 8423.25
+Adam Epsilon: 1e-08
+Weight decay: 0.001
+Train time: 00h33m14s
+GPU name: Tesla V100-SXM2-16GB
+GPU memory: 15.78
+
+Averages:
+Epoch Train loss   std    Test loss   std    P (macro) P std  R (macro) R std  F1 (macro) F1 std
+  1    1.494018  0.000000  1.472771 0.000000   0.4628  0.0000   0.4296  0.0000   0.4178   0.0000
+  2    1.242094  0.000000  1.430416 0.000000   0.4870  0.0000   0.4523  0.0000   0.4386   0.0000
+  3    1.142797  0.000000  1.463154 0.000000   0.4725  0.0000   0.4815  0.0000   0.4640   0.0000
+  4    1.069536  0.000000  1.460757 0.000000   0.4863  0.0000   0.4601  0.0000   0.4554   0.0000
+
+*** Detailed report ***
+
+Confusion matrices
+------------------
+Fact: 0 
+Argument: 1 
+Statute: 2 
+Precedent: 3 
+RulingByLowerCourt: 4 
+RulingByPresentCourt: 5 
+RatioOfTheDecision: 6 
+=> Iteration 0:
+Epoch 1:
+[[320  28   7  19   4  11  70]
+ [159 196  14 109   7   2 185]
+ [  9   2  86  11   0   0  12]
+ [ 71  22   2 134   2   3  70]
+ [ 25   5   1  24   7   5  35]
+ [  7   0   1   5   0  15  21]
+ [ 99  24   8  66   4   6 196]]
+Epoch 2:
+[[286  33  12  31   6  10  81]
+ [124 236  16 122   1   3 170]
+ [  5   1  89  15   0   0  10]
+ [ 62  13   4 171   3   2  49]
+ [ 20   3   3  24  10   6  36]
+ [  9   1   2   7   0  14  16]
+ [ 69  28  13  83   4   3 203]]
+Epoch 3:
+[[304  30  11  23  18  14  59]
+ [126 263  18  97  12   4 152]
+ [  5   3  96   6   1   0   9]
+ [ 75  17   3 149   7   2  51]
+ [ 19   6   2  18  19   7  31]
+ [  7   1   3   5   1  17  15]
+ [ 78  34  13  61  12   6 199]]
+Epoch 4:
+[[269  39   8  33  11  14  85]
+ [107 255  12 100   7   2 189]
+ [  5   2  86  10   0   0  17]
+ [ 70  18   3 150   3   2  58]
+ [ 15   8   1  21  14   7  36]
+ [  5   0   1   4   1  17  21]
+ [ 65  33   7  62   6   4 226]]
+
+Scores
+------
+Epoch: 1
+             Train loss  Test loss  P (macro)  R (macro)  F1 (macro)
+Iteration 0    1.494018   1.472771   0.462821   0.429628    0.417784
+
+Epoch: 2
+             Train loss  Test loss  P (macro)  R (macro)  F1 (macro)
+Iteration 0    1.242094   1.430416   0.486964   0.452275    0.438634
+
+Epoch: 3
+             Train loss  Test loss  P (macro)  R (macro)  F1 (macro)
+Iteration 0    1.142797   1.463154   0.472531   0.481546    0.464004
+
+Epoch: 4
+             Train loss  Test loss  P (macro)  R (macro)  F1 (macro)
+Iteration 0    1.069536   1.460757   0.486317   0.460085    0.455376
+
