@@ -1,0 +1,85 @@
+RESULTS REPORT (SINGLE SENTENCE CLASSIFICATION)
+Model: RoBERTa
+Encoder: roberta-base
+Evaluation: development set (1 random seeds)
+Max sequence length: 512
+Batch size: 16
+Dropout rate: 0.2
+Learning rate: 1e-05
+Freeze layers: False
+Adam Epsilon: 1e-08
+Weight decay: 0.001
+Train time: 00h32m35s
+GPU name: Tesla V100-SXM2-16GB
+GPU memory: 15.78
+
+Averages:
+Epoch Train loss   std    Test loss   std    P (macro) P std  R (macro) R std  F1 (macro) F1 std
+  1    1.413170  0.000000  1.473876 0.000000   0.4619  0.0000   0.4155  0.0000   0.4098   0.0000
+  2    1.125787  0.000000  1.396239 0.000000   0.5023  0.0000   0.4462  0.0000   0.4493   0.0000
+  3    1.020995  0.000000  1.389287 0.000000   0.5119  0.0000   0.4592  0.0000   0.4655   0.0000
+  4    0.934153  0.000000  1.454963 0.000000   0.5050  0.0000   0.4572  0.0000   0.4582   0.0000
+
+*** Detailed report ***
+
+Confusion matrices
+------------------
+Fact: 0 
+Argument: 1 
+Statute: 2 
+Precedent: 3 
+RulingByLowerCourt: 4 
+RulingByPresentCourt: 5 
+RatioOfTheDecision: 6 
+=> Iteration 0:
+Epoch 1:
+[[337  31   4  10   2  10  65]
+ [188 204  13  67   8   2 190]
+ [ 15   1  81   7   0   0  16]
+ [ 98  22   2  98   2   2  80]
+ [ 35   6   1  15   6   6  33]
+ [ 10   0   0   2   0  14  23]
+ [107  27   6  37   8   5 213]]
+Epoch 2:
+[[281  48   6  21   8  12  83]
+ [102 274   7  92   1   2 194]
+ [  5   2  77  16   0   0  20]
+ [ 64  17   0 138   4   2  79]
+ [ 20   8   0  17   9   7  41]
+ [  7   0   0   2   1  16  23]
+ [ 64  37   6  49   1   7 239]]
+Epoch 3:
+[[274  58   6  12  11   9  89]
+ [111 284  12  61   5   1 198]
+ [  3   3  89   4   0   0  21]
+ [ 80  23   2 110   3   2  84]
+ [ 16  13   1  12  16   6  38]
+ [  3   1   2   1   0  16  26]
+ [ 69  47   8  28   4   2 245]]
+Epoch 4:
+[[276  50   7  16   9  14  87]
+ [106 268  11  64   3   2 218]
+ [  6   3  86   5   0   0  20]
+ [ 75  17   1 119   3   2  87]
+ [ 16  10   0  15  13   8  40]
+ [  4   1   1   1   0  17  25]
+ [ 67  39   7  33   4   4 249]]
+
+Scores
+------
+Epoch: 1
+             Train loss  Test loss  P (macro)  R (macro)  F1 (macro)
+Iteration 0     1.41317   1.473876   0.461881    0.41546    0.409754
+
+Epoch: 2
+             Train loss  Test loss  P (macro)  R (macro)  F1 (macro)
+Iteration 0    1.125787   1.396239   0.502311   0.446196    0.449314
+
+Epoch: 3
+             Train loss  Test loss  P (macro)  R (macro)  F1 (macro)
+Iteration 0    1.020995   1.389287   0.511876   0.459202    0.465465
+
+Epoch: 4
+             Train loss  Test loss  P (macro)  R (macro)  F1 (macro)
+Iteration 0    0.934153   1.454963   0.504984   0.457212    0.458217
+
