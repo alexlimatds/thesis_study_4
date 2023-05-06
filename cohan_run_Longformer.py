@@ -7,8 +7,9 @@ EMBEDDING_DIM = 768
 BATCH_SIZE = 4
 DROPOUT_RATE = 0.2
 
+DATASET = 'malik' # 'malik' or 'facts'
 MAX_SENTENCE_LENGTH = 85
-MAX_SENTENCES_PER_BLOCK = 7
+MAX_SENTENCES_PER_BLOCK = 14
 CHUNK_LAYOUT = 'Cohan'
 
 N_EPOCHS = 4
@@ -17,6 +18,7 @@ LEARNING_RATE = 1e-5
 train_params = {}
 train_params['encoder_id'] = ENCODER_ID
 train_params['model_reference'] = MODEL_REFERENCE
+train_params['dataset'] = DATASET
 train_params['max_seq_len'] = MAX_SEQUENCE_LENGTH
 train_params['embedding_dim'] = EMBEDDING_DIM
 train_params['batch_size'] = BATCH_SIZE

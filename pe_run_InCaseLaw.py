@@ -8,8 +8,9 @@ LEARNING_RATE = 1e-5
 BATCH_SIZE = 16
 DROPOUT_RATE = 0.2
 
+DATASET = 'facts' # 'malik' or 'facts'
 N_EPOCHS = 4
-COMBINATION = 'C' # S for sum, C for concatenation
+COMBINATION = 'S' # S for sum, C for concatenation
 
 train_params = {}
 train_params['max_seq_len'] = MAX_SEQUENCE_LENGTH
@@ -17,6 +18,7 @@ train_params['learning_rate'] = LEARNING_RATE
 train_params['n_epochs'] = N_EPOCHS
 train_params['batch_size'] = BATCH_SIZE
 train_params['encoder_id'] = ENCODER_ID
+train_params['dataset'] = DATASET
 train_params['model_reference'] = MODEL_REFERENCE
 train_params['dropout_rate'] = DROPOUT_RATE
 train_params['embedding_dim'] = EMBEDDING_DIM

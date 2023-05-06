@@ -7,9 +7,11 @@ EMBEDDING_DIM = 768
 BATCH_SIZE = 16
 DROPOUT_RATE = 0.2
 
+DATASET = 'facts' # 'malik' or 'facts'
 MIXUP_ALPHA = 0.1
 AUGMENTATION_RATE = 1.0  # augmentation rate for pointed classes
-CLASSES_TO_AUGMENT = ['Precedent', 'RulingByLowerCourt']
+#CLASSES_TO_AUGMENT = ['Precedent', 'RulingByLowerCourt'] # malik dataset
+CLASSES_TO_AUGMENT = ['Fact', 'RulingByPresentCourt', 'Other'] # facts dataset
 
 N_EPOCHS_ENCODER = 4
 STOP_EPOCH_ENCODER = 1
@@ -21,6 +23,7 @@ LEARNING_RATE_CLASSIFIER = 1e-2
 train_params = {}
 train_params['encoder_id'] = ENCODER_ID
 train_params['model_reference'] = MODEL_REFERENCE
+train_params['dataset'] = DATASET
 train_params['max_seq_len'] = MAX_SEQUENCE_LENGTH
 train_params['embedding_dim'] = EMBEDDING_DIM
 train_params['batch_size'] = BATCH_SIZE

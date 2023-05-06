@@ -1,9 +1,8 @@
 from os import listdir
 import pandas as pd
 import numpy as np
-import csv, random, torch, singlesc_models, transformers, time, json, malik
+import csv, random, torch, singlesc_models, transformers, time, json, malik, facts, mixup2_models
 from datetime import datetime
-import mixup2_models
 
 def evaluate_BERT(train_params):
     start_total = time.perf_counter()
@@ -12,9 +11,17 @@ def evaluate_BERT(train_params):
     time_tag = f'{model_reference}_{datetime.now().strftime("%Y-%m-%d-%Hh%Mm%Ss")}'
     train_params['time_tag'] = time_tag
     
+    dataset_name = train_params['dataset']
+    if dataset_name == 'malik':
+        data_loader = malik.Malik()
+    elif dataset_name == 'facts':
+        data_loader = facts.Facts()
+    else:
+        raise ValueError('Invalid dataset:', dataset_name)
+    
     # setting labels
-    labels_to_idx = malik.get_labels_to_idx()
-    labels = malik.get_valid_labels(labels_to_idx)
+    labels_to_idx = data_loader.get_labels_to_idx()
+    labels = data_loader.get_valid_labels(labels_to_idx)
     train_params['n_classes'] = len(labels)
     
     # tokenizer
@@ -22,7 +29,7 @@ def evaluate_BERT(train_params):
     tokenizer = transformers.AutoTokenizer.from_pretrained(encoder_id)
     
     # loading data
-    dic_docs_train, dic_docs_dev, dic_docs_test = malik.get_data()
+    dic_docs_train, dic_docs_dev, dic_docs_test = data_loader.get_data()
     
     # dataset objects
     use_dev_set = train_params['use_dev_set']
@@ -104,10 +111,12 @@ def save_report(
         time_tag : time tag to be appended to report file name.
     """
     model_reference = train_params['model_reference']
+    dataset_name = train_params["dataset"]
     report = (
         'RESULTS REPORT (MIXUP 2 SINGLE SENTENCE CLASSIFICATION)\n'
         f'Model: {model_reference}\n'
         f'Encoder: {train_params["encoder_id"] if not train_params["use_mock"] else "MOCK MODEL"}\n'
+        f'Dataset: {dataset_name}\n'
         f'Evaluation: {evaluation}\n'
         f'Max sequence length: {train_params["max_seq_len"]}\n'
         f'Batch size: {train_params["batch_size"]}\n'
@@ -150,5 +159,5 @@ def save_report(
             index=[f'Iteration {i}' for i in range(scores.shape[0])])
         report += f'Epoch: {epoch}\n' + df.to_string() + '\n\n'
     
-    with open('./reports/' + f'rep-mixup2-{time_tag}.txt', 'w') as f:
+    with open(f'./reports/{dataset_name}/rep-mixup2-{time_tag}.txt', 'w') as f:
         f.write(report)
