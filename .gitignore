@@ -1,5 +1,5 @@
 slurm*.out
 slurm*.err
 __pycache__
-malik
+malik/*.json
 
