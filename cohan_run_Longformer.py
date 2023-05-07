@@ -7,7 +7,7 @@ EMBEDDING_DIM = 768
 BATCH_SIZE = 4
 DROPOUT_RATE = 0.2
 
-DATASET = 'malik' # 'malik' or 'facts'
+DATASET = 'facts' # 'malik' or 'facts'
 MAX_SENTENCE_LENGTH = 85
 MAX_SENTENCES_PER_BLOCK = 14
 CHUNK_LAYOUT = 'Cohan'

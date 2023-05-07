@@ -14,7 +14,7 @@ AUGMENTATION_RATE = 1.0  # augmentation rate for pointed classes
 CLASSES_TO_AUGMENT = ['Fact', 'RulingByPresentCourt', 'Other'] # facts dataset
 
 N_EPOCHS_ENCODER = 4
-STOP_EPOCH_ENCODER = 1
+STOP_EPOCH_ENCODER = 2
 LEARNING_RATE_ENCODER = 1e-5
 
 N_EPOCHS_CLASSIFIER = 200
