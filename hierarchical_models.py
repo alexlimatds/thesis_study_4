@@ -66,39 +66,109 @@ class HierarchicalSC(torch.nn.Module):
                 input_ids=input_ids,             # input_ids.shape: (batch_size, seq_len)
                 attention_mask=attention_mask    # attention_mask.shape: (batch_size, seq_len)
             )
-        return cls_embeddings # cls_embeddings.shape: (batch_size, embedd_dim)
+        return cls_embeddings # cls_embeddings.shape: (batch_size, embedding_dim)
     
     def forward(self, sent_embeddings):
         '''
-        Each call to this method process one document represented as a sequence of sentence embeddings 
-        yelded by the encode_batch method.
+        Each call to this method process a batch of documents.
         The sentence embeddings are fed to a BiLSTM network to get embeddings enriched with document context.
-        This method returns one logit tensor for each sentence in the document.
+        This method returns one logit tensor for each sentence in the batch.
         Arguments:
-            sent_embeddings : tensor of shape (n_sentences, embedding_dim)
+            sent_embeddings : The batch of documents as a list of tensors. The list has length equals to batch_size (n docs in batch). 
+                              Each tensor has shape (n sentences in doc, embedding_dim).
         Returns:
-            logits : tensor of shape (n_sentences, n_classes)
+            logits : tensor of shape (n sentences in batch, n_classes).
         '''
-        sent_embeddings = self.dropout(sent_embeddings)
-        lstm_embeddings, _ = self.bilstm(
-            sent_embeddings.unsqueeze(0)  # LSTM requires batch dimension so we add it with unsqueeze
-        )
-        # squeeze to remove batch dimension
-        lstm_embeddings = lstm_embeddings.squeeze(0) # lstm_embeddings.shape: (n_sentences, lstm_hidden_dim)
+        # 2nd level encoding
+        padded_embeddings = torch.nn.utils.rnn.pad_sequence(sent_embeddings, batch_first=True) # padded_embeddings.shape: (batch_size, max_n_sentences, embbeding_dim)
+        packed_embs = torch.nn.utils.rnn.pack_sequence(padded_embeddings, enforce_sorted=False)
+        packed_lstm_embeddings, _ = self.bilstm(packed_embs)
+        lstm_embeddings, lens_lstm_embeddings = torch.nn.utils.rnn.pad_packed_sequence(packed_lstm_embeddings, batch_first=True)
+        # lstm_embeddings.shape: (batch_size, max_n_sentences, embedding_dim)
+        # lens_lstm_embeddings.shape: (batch_size, n_valid_sentences)
+        valid_embeddings = []
+        for idx_batch in range(lens_lstm_embeddings.shape[0]):
+            n_valid = lens_lstm_embeddings[idx_batch]
+            valid_embeddings.append(lstm_embeddings[idx_batch, 0:n_valid])
+        valid_embeddings = torch.vstack(valid_embeddings) # valid_embeddings.shape: (n valid sentences in batch, lstm_hidden_dim)
         
         # classification
-        logits = self.classifier(lstm_embeddings)   # logits.shape: (n_sentences, n_classes)
+        logits = self.classifier(valid_embeddings)   # logits.shape: (n_sentences, n_classes)
 
         return logits
 
-def evaluate(model, test_ds_lst, loss_function, batch_size, device):
+class TensorList_Dataset(torch.utils.data.Dataset):
+    def __init__(self, sent_embeddings, targets):
+        """
+        Arguments:
+            sent_embeddings: list of tensors with shape (n_sentences, embedding_dim). The items in the list may have different values of n_sentences.
+            targets: list of tensors with shape (n_sentences, 1). The items in the list may have different values of n_sentences.
+        """
+        for t1, t2 in zip(sent_embeddings, targets):
+            assert t1.shape[0] == t2.shape[0]
+        self.sent_embeddings = sent_embeddings
+        self.targets = targets
+
+    def __getitem__(self, index):
+        return self.sent_embeddings[index], self.targets[index]
+    
+    def __len__(self):
+        return len(self.targets)
+
+def collate_batch_TensorList(batch):
+    '''
+    Prepares a batch of TensorList_Dataset items.
+    Arguments:
+        batch: list of tuples from an instance of TensorList_Dataset.
+    Returns:
+        A list with the sentence embeddings.
+        A list with the targets.
+    '''
+    embeddings = []
+    targets = []
+    for e, t in batch:
+        embeddings.append(e)
+        targets.append(t)
+    return embeddings, targets
+
+def first_encoding(ds_list, sentence_classifier, batch_size, device):
+    '''
+    Uses the transformer encoder to encode sentences.
+    Arguments:
+        ds_list: list of instances of singlesc_models.Single_SC_Dataset.
+        sentence_classifier: instance of HierarchicalSC.
+    Returns:
+        List of tensors representing the sentence embeddings.
+        List of tensort representing the sentence targets.
+    '''
+    targets = []    # a tensor by doc
+    embeddings = [] # a tensor by doc
+    for ds in ds_list: # iterates datasets/documents
+        dl = torch.utils.data.DataLoader(ds, batch_size=batch_size)
+        targets_doc = []
+        embeddings_doc = []
+        for batch in dl: # iterates batches of sentences in current document
+            # first-level encoding
+            ids = batch['ids'].to(device)
+            mask = batch['mask'].to(device)
+            targets_doc.append(batch['target'].to(device))
+            embeddings_doc.append(
+                sentence_classifier.encode_batch(ids, mask).to(device)
+            )
+            # end batch
+        targets.append(torch.hstack(targets_doc))
+        embeddings.append(torch.vstack(embeddings_doc))
+        # end doc
+    return embeddings, targets
+
+def evaluate(model, rnn_ds, loss_function, batch_size, device):
     """
     Evaluates a provided model.
     Arguments:
-        model: the model to be evaluated.
-        test_ds_lst: list of instances of DFCSC_Dataset storing the test data.
+        model: the model to be evaluated. An instance of HierarchicalSC.
+        rnn_ds: instance of TensorList_Dataset.
         loss_function: instance of the loss function used to train the model.
-        batch_size: 
+        batch_size: batch size.
         device: device where the model is located.
     Returns:
         eval_loss (float): the computed test loss score.
@@ -112,6 +182,25 @@ def evaluate(model, test_ds_lst, loss_function, batch_size, device):
     eval_loss = []
     model.eval()
     with torch.no_grad():
+        
+        dl = torch.utils.data.DataLoader(rnn_ds, batch_size=batch_size, collate_fn=collate_batch_TensorList)
+        for embeddings_batch, y_true_batch in dl: # iterates batches of documents
+            # second-level encoding and classification
+            y_hat_batch = model(embeddings_batch)
+            # ignores classes with negative ID
+            y_true_batch = torch.hstack(y_true_batch)
+            idx_valid = (y_true_batch >= 0).nonzero().squeeze()
+            y_true_batch_valid = y_true_batch[idx_valid]
+            y_hat_batch_valid = y_hat_batch[idx_valid]
+            # getting loss and valid predictions
+            loss = loss_function(y_hat_batch_valid, y_true_batch_valid)
+            eval_loss.append(loss.item())
+            predictions_batch_valid = y_hat_batch_valid.argmax(dim=1)
+            predictions = torch.cat((predictions, predictions_batch_valid))
+            y_true = torch.cat((y_true, y_true_batch_valid))
+            # end batch
+        
+        '''
         for ds in test_ds_lst: # iterates datasets/documents
             dl = torch.utils.data.DataLoader(ds, batch_size=batch_size)
             y_true_doc = []
@@ -139,6 +228,7 @@ def evaluate(model, test_ds_lst, loss_function, batch_size, device):
             predictions_doc_valid = y_hat_doc_valid.argmax(dim=1)
             predictions = torch.cat((predictions, predictions_doc_valid))
             y_true = torch.cat((y_true, y_true_doc_valid))
+        '''
         predictions = predictions.detach().to('cpu').numpy()
         y_true = y_true.detach().to('cpu').numpy()
     eval_loss = np.array(eval_loss).mean()
@@ -175,7 +265,7 @@ def fit(train_params, ds_train_lst, ds_test_lst, transformer_encoder, device):
     batch_size = train_params['batch_size']
     
     # creating model
-    sentence_classifier = HierarchicalSC(transformer_encoder, n_classes, dropout_rate, embedding_dim, lstm_hidden_dim)
+    sentence_classifier = HierarchicalSC(transformer_encoder, n_classes, dropout_rate, embedding_dim, lstm_hidden_dim).to(device)
     
     criterion = torch.nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.Adam(
@@ -200,34 +290,41 @@ def fit(train_params, ds_train_lst, ds_test_lst, transformer_encoder, device):
     metrics = {} # key: epoch number, value: numpy tensor storing train loss, test loss, P macro, R macro, F1 macro
     confusion_matrices = {} # key: epoch number, value: scikit-learn's confusion matrix
     start_train = time.perf_counter()
+    
+    # we get sentence embeddings and targets outside epoch loop to avoid input into transformer encoder
+    # and speed up the training
+    print('  Encoding sentences...', end='')
+    embeddings_train, y_true_train = first_encoding(ds_train_lst, sentence_classifier, batch_size, device)
+    embeddings_test, y_true_test = first_encoding(ds_test_lst, sentence_classifier, batch_size, device)
+    print(' Done!')
+    
+    rnn_ds_train = TensorList_Dataset(embeddings_train, y_true_train)
+    rnn_ds_test = TensorList_Dataset(embeddings_test, y_true_test)
+    
     for epoch in range(1, n_epochs_classifier + 1):
         print(f'  Starting epoch {epoch}... ', end='')
         start_epoch = time.perf_counter()
         epoch_loss = []
         sentence_classifier.train()
-        for ds in ds_train_lst: # iterates datasets/documents
-            optimizer.zero_grad()
-            dl = torch.utils.data.DataLoader(ds, batch_size=batch_size)
-            y_true_doc = []
-            embeddings_doc = []
-            for batch in dl: # iterates batches of sentences in current document
-                # first-level encoding
-                ids = batch['ids'].to(device)
-                mask = batch['mask'].to(device)
-                y_true_doc.append(batch['target'].to(device))
-                embeddings_doc.append(
-                    sentence_classifier.encode_batch(ids, mask).to(device)
-                )
-                # end batch
-            y_true_doc = torch.hstack(y_true_doc)
-            embeddings_doc = torch.vstack(embeddings_doc)
+        
+        dl = torch.utils.data.DataLoader(rnn_ds_train, batch_size=batch_size, collate_fn=collate_batch_TensorList)
+        for embeddings_batch, y_true_batch in dl: # iterates batches of documents
+            '''
+            print('  len(embeddings_batch):', len(embeddings_batch))
+            print('  embeddings_batch[0].shape:', embeddings_batch[0].shape)
+            print('  embeddings_batch[1].shape:', embeddings_batch[1].shape)
+            print('  len(y_true_batch):', len(y_true_batch))
+            print('  y_true_batch[0].shape):', y_true_batch[0].shape)
+            print('  y_true_batch[1].shape):', y_true_batch[1].shape)
+            '''
             # second-level encoding and classification
-            y_hat_doc = sentence_classifier(embeddings_doc)
+            y_hat_batch = sentence_classifier(embeddings_batch)
             # ignores classes with negative ID
-            idx_valid = (y_true_doc >= 0).nonzero().squeeze()
-            y_true_doc_valid = y_true_doc[idx_valid]
-            y_hat_doc_valid = y_hat_doc[idx_valid]
-            loss = criterion(y_hat_doc_valid, y_true_doc_valid)
+            y_true_batch = torch.hstack(y_true_batch)
+            idx_valid = (y_true_batch >= 0).nonzero().squeeze()
+            y_true_batch_valid = y_true_batch[idx_valid]
+            y_hat_batch_valid = y_hat_batch[idx_valid]
+            loss = criterion(y_hat_batch_valid, y_true_batch_valid)
             epoch_loss.append(loss.item())
             # backward
             loss.backward()
@@ -235,13 +332,14 @@ def fit(train_params, ds_train_lst, ds_test_lst, transformer_encoder, device):
             # updating weights and learning rate
             optimizer.step()
             lr_scheduler.step()
-            # end document processing
+            # end batch
+            
         epoch_loss = np.array(epoch_loss).mean()
         # evaluation
         optimizer.zero_grad()
         eval_loss, p_macro, r_macro, f1_macro, cm = evaluate(
             sentence_classifier, 
-            ds_test_lst, 
+            rnn_ds_test, 
             criterion, 
             batch_size, 
             device

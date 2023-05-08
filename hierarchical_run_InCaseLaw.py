@@ -10,12 +10,10 @@ DROPOUT_RATE = 0.2
 DATASET = 'facts' # 'malik' or 'facts'
 
 N_EPOCHS_ENCODER = 4
-#STOP_EPOCH_ENCODER = 2
-STOP_EPOCH_ENCODER = 1
+STOP_EPOCH_ENCODER = 2
 LEARNING_RATE_ENCODER = 1e-5
 
-#N_EPOCHS_CLASSIFIER = 200
-N_EPOCHS_CLASSIFIER = 2
+N_EPOCHS_CLASSIFIER = 100
 LEARNING_RATE_CLASSIFIER = 1e-2
 LSTM_HIDDEN_DIM = 200
 
@@ -36,10 +34,10 @@ train_params['lstm_hidden_dim'] = LSTM_HIDDEN_DIM
 train_params['weight_decay'] = 1e-3
 train_params['eps'] = 1e-8
 
-train_params['n_documents'] = 1
+#train_params['n_documents'] = 2
 train_params['use_dev_set'] = True
 #train_params['n_iterations'] = 5
-train_params['n_iterations'] = 1
+train_params['n_iterations'] = 3
 train_params['use_mock'] = False
 
 hierarchical_app.evaluate_BERT(train_params)
