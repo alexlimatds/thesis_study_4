@@ -10,7 +10,7 @@ DROPOUT_RATE = 0.2
 
 DATASET = 'facts' # 'malik' or 'facts'
 N_EPOCHS = 4
-COMBINATION = 'S' # S for sum, C for concatenation
+COMBINATION = 'C' # S for sum, C for concatenation
 
 train_params = {}
 train_params['max_seq_len'] = MAX_SEQUENCE_LENGTH
