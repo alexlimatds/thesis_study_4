@@ -41,11 +41,11 @@ def evaluate_BERT(train_params):
         n_documents = train_params.get('n_documents')
         temp_docs_train = {k: dic_docs_train[k] for k in sorted(dic_docs_train.keys())[:n_documents]}
         temp_docs_test = {k: dic_docs_test[k] for k in sorted(dic_docs_test.keys())[:n_documents]}
-        ds_train = pe_models.DFCSC_and_Position_Dataset(temp_docs_train, labels_to_idx, tokenizer, max_seq_len, embedding_dim, pos_encoder)
-        ds_test = pe_models.DFCSC_and_Position_Dataset(temp_docs_test, labels_to_idx, tokenizer, max_seq_len, embedding_dim, pos_encoder)
+        ds_train = pe_models.Content_PE_Dataset(temp_docs_train, labels_to_idx, tokenizer, max_seq_len, embedding_dim, pos_encoder)
+        ds_test = pe_models.Content_PE_Dataset(temp_docs_test, labels_to_idx, tokenizer, max_seq_len, embedding_dim, pos_encoder)
     else:
-        ds_train = pe_models.DFCSC_and_Position_Dataset(dic_docs_train, labels_to_idx, tokenizer, max_seq_len, embedding_dim, pos_encoder)
-        ds_test = pe_models.DFCSC_and_Position_Dataset(dic_docs_test, labels_to_idx, tokenizer, max_seq_len, embedding_dim, pos_encoder)
+        ds_train = pe_models.Content_PE_Dataset(dic_docs_train, labels_to_idx, tokenizer, max_seq_len, embedding_dim, pos_encoder)
+        ds_test = pe_models.Content_PE_Dataset(dic_docs_test, labels_to_idx, tokenizer, max_seq_len, embedding_dim, pos_encoder)
        
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     

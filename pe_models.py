@@ -7,11 +7,18 @@ import singlesc_models
 
 class PositionalEncoder:
     '''
-    TODO
+    Computes a Sinusoidal Positional Encoder matrix.
     '''
     # Adapted from https://torchtutorialstaging.z5.web.core.windows.net/beginner/transformer_tutorial.html
     def __init__(self, embedding_dim, max_len=5000):
+        '''
+        Computes a PE matrix with shape (max_len, embedding_dim).
+        Arguments:
+            embedding_dim: the dimension of position vector.
+            max_len: the maximum supported sequence lenght.
+        '''
         super(PositionalEncoder, self).__init__()
+        assert max_len <= 10000
         self.embedding_dim = embedding_dim
         self.pe = torch.zeros(max_len, embedding_dim)
         position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
@@ -21,16 +28,14 @@ class PositionalEncoder:
     
     def get_embeddings(self, seq_len):
         '''
-        TODO
+        Returns a row subset of the PE matrix. The returned subset concerns a range of rows from 0 to seq_len - 1.
         '''
         return self.pe[0:seq_len]
 
-class DFCSC_and_Position_Dataset(torch.utils.data.Dataset):
+class Content_PE_Dataset(torch.utils.data.Dataset):
     """
-    A dataset object to be used together a DFSC_PE_BERT model. 
-    Each item of the dataset represents DFCSC chunk comprising a set of core sentences and context tokens (check 
-    the tokenize_sentences function). The position each sentence occupy in its source 
-    document is also provided.
+    A dataset object to be used together a SingleSC_PE_BERT model. 
+    Each item of the dataset represents an inidividual sentence. The positional embedding of each sentence is also provided.
     """
     def __init__(self, dic_docs, labels_to_idx, tokenizer, max_seq_len, embedding_dim, positional_encoder):
         """
