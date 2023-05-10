@@ -1,0 +1,154 @@
+RESULTS REPORT (MIXUP 2 SINGLE SENTENCE CLASSIFICATION)
+Model: InCaseLaw
+Encoder: law-ai/InCaseLawBERT
+Dataset: facts
+Evaluation: test set (5 random seeds)
+Max sequence length: 512
+Batch size: 16
+Dropout rate: 0.2
+Learning rate : 1e-05
+Number of epochs: 4
+Mixup alpha: 0.1
+Augmentation rate: 1.0
+Classes to augment: ['Fact', 'RulingByPresentCourt', 'Other']
+Average number of mixup vectors by epoch: 16444.5
+Adam Epsilon: 1e-08
+Weight decay: 0.001
+Train time: 02h51m39s
+GPU name: Tesla V100-SXM2-16GB
+GPU memory: 15.78
+
+Averages:
+Epoch Train loss   std    Test loss   std    P (macro) P std  R (macro) R std  F1 (macro) F1 std
+  1    0.554590  0.008049  0.311520 0.014250   0.7063  0.0072   0.7544  0.0068   0.7270   0.0036
+  2    0.428911  0.004599  0.326479 0.013388   0.6945  0.0148   0.7655  0.0108   0.7233   0.0066
+  3    0.374130  0.004575  0.332976 0.012732   0.6894  0.0060   0.7655  0.0115   0.7198   0.0026
+  4    0.335896  0.004312  0.342984 0.003247   0.6889  0.0063   0.7639  0.0027   0.7192   0.0040
+
+*** Detailed report ***
+
+Confusion matrices
+------------------
+Fact: 0 
+RulingByPresentCourt: 1 
+Other: 2 
+=> Iteration 0:
+Epoch 1:
+[[ 264    4  124]
+ [   1   25   11]
+ [ 115   23 1630]]
+Epoch 2:
+[[ 278    3  111]
+ [   0   27   10]
+ [ 138   28 1602]]
+Epoch 3:
+[[ 273    3  116]
+ [   1   26   10]
+ [ 124   28 1616]]
+Epoch 4:
+[[ 274    3  115]
+ [   1   25   11]
+ [ 129   26 1613]]
+=> Iteration 1:
+Epoch 1:
+[[ 270    2  120]
+ [   0   23   14]
+ [ 125   19 1624]]
+Epoch 2:
+[[ 290    3   99]
+ [   1   25   11]
+ [ 164   28 1576]]
+Epoch 3:
+[[ 252    3  137]
+ [   1   25   11]
+ [ 108   24 1636]]
+Epoch 4:
+[[ 276    3  113]
+ [   1   25   11]
+ [ 132   29 1607]]
+=> Iteration 2:
+Epoch 1:
+[[ 276    3  113]
+ [   1   24   12]
+ [ 118   20 1630]]
+Epoch 2:
+[[ 280    3  109]
+ [   1   25   11]
+ [ 131   23 1614]]
+Epoch 3:
+[[ 289    3  100]
+ [   1   26   10]
+ [ 144   28 1596]]
+Epoch 4:
+[[ 266    3  123]
+ [   1   26   10]
+ [ 119   25 1624]]
+=> Iteration 3:
+Epoch 1:
+[[ 289    4   99]
+ [   1   24   12]
+ [ 153   20 1595]]
+Epoch 2:
+[[ 251    3  138]
+ [   0   25   12]
+ [ 105   19 1644]]
+Epoch 3:
+[[ 267    3  122]
+ [   1   25   11]
+ [ 125   25 1618]]
+Epoch 4:
+[[ 271    3  118]
+ [   1   25   11]
+ [ 127   25 1616]]
+=> Iteration 4:
+Epoch 1:
+[[ 266    3  123]
+ [   1   24   12]
+ [ 110   20 1638]]
+Epoch 2:
+[[ 271    3  118]
+ [   0   25   12]
+ [ 125   25 1618]]
+Epoch 3:
+[[ 290    3   99]
+ [   1   25   11]
+ [ 159   26 1583]]
+Epoch 4:
+[[ 283    3  106]
+ [   1   25   11]
+ [ 142   27 1599]]
+
+Scores
+------
+Epoch: 1
+             Train loss  Test loss  P (macro)  R (macro)  F1 (macro)
+Iteration 0    0.542610   0.309328   0.699673   0.757030    0.722821
+Iteration 1    0.550970   0.305856   0.710016   0.742983    0.725069
+Iteration 2    0.558707   0.309415   0.712716   0.758225    0.732725
+Iteration 3    0.566829   0.338000   0.695769   0.762681    0.725057
+Iteration 4    0.553833   0.295002   0.713355   0.751230    0.729466
+
+Epoch: 2
+             Train loss  Test loss  P (macro)  R (macro)  F1 (macro)
+Iteration 0    0.420475   0.336044   0.687853   0.781674    0.724776
+Iteration 1    0.431551   0.346653   0.672849   0.768958    0.711656
+Iteration 2    0.427734   0.314292   0.700201   0.767619    0.728819
+Iteration 3    0.433378   0.310807   0.717786   0.748615    0.729813
+Iteration 4    0.431415   0.324596   0.693890   0.760720    0.721246
+
+Epoch: 3
+             Train loss  Test loss  P (macro)  R (macro)  F1 (macro)
+Iteration 0    0.375677   0.327272   0.689913   0.771053    0.721709
+Iteration 1    0.367547   0.311627   0.698624   0.747957    0.717431
+Iteration 2    0.371437   0.348375   0.685854   0.780888    0.723925
+Iteration 3    0.381296   0.335876   0.691710   0.757319    0.718463
+Iteration 4    0.374693   0.341730   0.680811   0.770278    0.717684
+
+Epoch: 4
+             Train loss  Test loss  P (macro)  R (macro)  F1 (macro)
+Iteration 0    0.332048   0.342915   0.689575   0.762329    0.719256
+Iteration 1    0.332936   0.343186   0.680593   0.762898    0.713201
+Iteration 2    0.332429   0.337015   0.698301   0.766609    0.725551
+Iteration 3    0.342546   0.345969   0.692324   0.760343    0.720259
+Iteration 4    0.339521   0.345834   0.683561   0.767342    0.717773
+
