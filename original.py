@@ -1,7 +1,7 @@
 import json, ast
 import pandas as pd
 
-class Facts:
+class Malik:
     def raw_to_dic_docs(self, raw_data):
         '''
         Converts JSON to dictionaries with pandas dataframes.
@@ -18,9 +18,6 @@ class Facts:
                     labels = ast.literal_eval(labels)
                 assert len(sentences) == len(labels)
                 df = pd.DataFrame(list(zip(sentences, labels)), columns=['sentence', 'label'])
-                # Converting labels
-                df.loc[df['label'] == 'Issue', 'label'] = 'Fact'
-                df.loc[~df['label'].isin(['Fact', 'RulingByPresentCourt', 'RatioOfTheDecision']), 'label'] = 'Other'
                 dic_[doc_id] = df
                 n_sentences += len(sentences)
         return dic_, n_sentences
@@ -36,9 +33,18 @@ class Facts:
     def get_labels_to_idx(self):
         labels_to_idx = {}
         labels_to_idx['Fact'] = 0
-        labels_to_idx['RulingByPresentCourt'] = 1
-        labels_to_idx['RatioOfTheDecision'] = 2
-        labels_to_idx['Other'] = 3
+        labels_to_idx['Issue'] = 1
+        labels_to_idx['ArgumentPetitioner'] = 2
+        labels_to_idx['ArgumentRespondent'] = 3
+        labels_to_idx['Statute'] = 4
+        labels_to_idx['PrecedentNotReliedUpon'] = 5
+        labels_to_idx['PrecedentOverruled'] = 6
+        labels_to_idx['PrecedentReliedUpon'] = 7
+        labels_to_idx['RulingByLowerCourt'] = 8
+        labels_to_idx['RulingByPresentCourt'] = 9
+        labels_to_idx['RatioOfTheDecision'] = 10
+        labels_to_idx['Dissent'] = 11
+        labels_to_idx['None'] = 12
         return labels_to_idx
 
     def get_valid_labels(self, labels_to_idx):
@@ -72,7 +78,7 @@ class Facts:
 
 def main():
     # A simple test
-    o = Facts()
+    o = Malik()
     train, _, _ = o.get_data()
     labels = set()
     for _, df in train.items():

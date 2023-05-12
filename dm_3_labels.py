@@ -20,7 +20,7 @@ class Facts:
                 df = pd.DataFrame(list(zip(sentences, labels)), columns=['sentence', 'label'])
                 # Converting labels
                 df.loc[df['label'] == 'Issue', 'label'] = 'Fact'
-                df.loc[~df['label'].isin(['Fact', 'RulingByPresentCourt', 'RatioOfTheDecision']), 'label'] = 'Other'
+                df.loc[~df['label'].isin(['Fact', 'RulingByPresentCourt']), 'label'] = 'Other'
                 dic_[doc_id] = df
                 n_sentences += len(sentences)
         return dic_, n_sentences
@@ -37,8 +37,7 @@ class Facts:
         labels_to_idx = {}
         labels_to_idx['Fact'] = 0
         labels_to_idx['RulingByPresentCourt'] = 1
-        labels_to_idx['RatioOfTheDecision'] = 2
-        labels_to_idx['Other'] = 3
+        labels_to_idx['Other'] = 2
         return labels_to_idx
 
     def get_valid_labels(self, labels_to_idx):
