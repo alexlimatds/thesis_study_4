@@ -9,9 +9,9 @@ DROPOUT_RATE = 0.2
 
 DATASET = 'facts' # 'malik' or 'facts'
 MIXUP_ALPHA = 0.1
-AUGMENTATION_RATE = 1.0  # augmentation rate for pointed classes
+AUGMENTATION_RATE = 0.5  # augmentation rate for pointed classes
 #CLASSES_TO_AUGMENT = ['Precedent', 'RulingByLowerCourt'] # malik dataset
-CLASSES_TO_AUGMENT = ['Fact', 'RulingByPresentCourt', 'Other'] # facts dataset
+CLASSES_TO_AUGMENT = ['Fact', 'RulingByPresentCourt', 'RatioOfTheDecision'] # facts dataset
 
 N_EPOCHS_ENCODER = 4
 STOP_EPOCH_ENCODER = 4

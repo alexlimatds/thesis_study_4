@@ -7,7 +7,7 @@ EMBEDDING_DIM = 768
 BATCH_SIZE = 16
 DROPOUT_RATE = 0.2
 
-DATASET = 'malik' # 'malik' or 'facts'
+DATASET = 'facts' # 'malik' or 'facts'
 MIN_CONTEXT_LENGTH = 250
 
 N_EPOCHS = 4

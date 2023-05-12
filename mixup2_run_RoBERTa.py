@@ -8,10 +8,10 @@ BATCH_SIZE = 16
 DROPOUT_RATE = 0.2
 
 DATASET = 'facts' # 'malik' or 'facts'
-MIXUP_ALPHA = 0.1
+MIXUP_ALPHA = 1.0
 AUGMENTATION_RATE = 1.0 # augmentation rate for pointed classes
 #CLASSES_TO_AUGMENT = ['Fact', 'Argument', 'Statute', 'Precedent', 'RulingByLowerCourt', 'RulingByPresentCourt', 'RatioOfTheDecision'] # malik dataset
-CLASSES_TO_AUGMENT = ['Fact', 'RulingByPresentCourt', 'Other'] # facts dataset
+CLASSES_TO_AUGMENT = ['Fact', 'RulingByPresentCourt', 'RatioOfTheDecision'] # facts dataset
 
 N_EPOCHS = 4
 LEARNING_RATE = 1e-5
