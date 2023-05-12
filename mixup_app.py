@@ -8,7 +8,7 @@ def evaluate_BERT(train_params):
     start_total = time.perf_counter()
     # time tag
     model_reference = train_params['model_reference']
-    time_tag = f'{model_reference}_{datetime.now().strftime("%Y-%m-%d-%Hh%Mmin")}'
+    time_tag = f'{model_reference}_{datetime.now().strftime("%Y-%m-%d-%Hh%Mm%Ss")}'
     train_params['time_tag'] = time_tag
     
     dataset_name = train_params['dataset']
