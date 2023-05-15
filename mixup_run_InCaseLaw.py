@@ -14,7 +14,7 @@ CLASSES_TO_AUGMENT = ['Argument', 'Statute', 'Precedent', 'RulingByLowerCourt', 
 #CLASSES_TO_AUGMENT = ['Fact', 'RulingByPresentCourt', 'RatioOfTheDecision'] # facts dataset
 
 N_EPOCHS_ENCODER = 4
-STOP_EPOCH_ENCODER = 3
+STOP_EPOCH_ENCODER = 1
 LEARNING_RATE_ENCODER = 1e-5
 
 N_EPOCHS_CLASSIFIER = 200
