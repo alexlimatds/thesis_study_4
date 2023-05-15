@@ -277,17 +277,7 @@ def fit(train_params, ds_train, ds_test, device):
         ).to(device)
     
     if train_params['freeze_layers'] and not use_mock:
-        for attr_name in ['encoder', 'transformer']: # name of the attribute storing the transformer layers changes according the transformer implementation
-            transformer_encoder = getattr(sentence_classifier.encoder, attr_name, None)
-            if transformer_encoder is not None:
-                break;
-        if transformer_encoder is None:
-            raise ValueException('It was not possible to find and freeze transformer layers.')
-        n_layers_to_freeze = len(transformer_encoder.layer)
-        layers = [sentence_classifier.encoder.embeddings, *transformer_encoder.layer[:n_layers_to_freeze]]
-        for l in layers:
-            for param in l.parameters():
-                param.requires_grad = False
+        sentence_classifier.encoder.requires_grad_(False)
     
     criterion = torch.nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.Adam(
