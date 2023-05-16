@@ -135,8 +135,9 @@ def evaluate_BERT(train_params):
             train_params['augmentation_rate']
         )
         # joining mixup and sentence embeddings
-        train_embeddings = torch.vstack([train_embeddings, X_hat])
-        train_one_hot_targets = torch.vstack([train_one_hot_targets, Y_hat])
+        if len(train_params['classes_to_augment']) > 0:
+            train_embeddings = torch.vstack([train_embeddings, X_hat])
+            train_one_hot_targets = torch.vstack([train_one_hot_targets, Y_hat])
         end_enc = time.perf_counter()
         print('finished! Time: ', time.strftime("%Hh%Mm%Ss", time.gmtime(end_enc - start_enc)))
         
