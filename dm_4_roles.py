@@ -1,7 +1,7 @@
 import json, ast
 import pandas as pd
 
-class Facts:
+class FourRolesDM:
     def raw_to_dic_docs(self, raw_data):
         '''
         Converts JSON to dictionaries with pandas dataframes.
@@ -72,7 +72,7 @@ class Facts:
 
 def main():
     # A simple test
-    o = Facts()
+    o = FourRolesDM()
     train, _, _ = o.get_data()
     labels = set()
     for _, df in train.items():

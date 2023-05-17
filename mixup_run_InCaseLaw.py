@@ -7,16 +7,15 @@ EMBEDDING_DIM = 768
 BATCH_SIZE = 16
 DROPOUT_RATE = 0.2
 
-DATASET = 'facts' # 'malik' or 'facts'
+DATASET = '4_roles' # '7_roles' or '4_roles'
 MIXUP_ALPHA = 0.1
 AUGMENTATION_RATE = 0.5  # augmentation rate for pointed classes
-#CLASSES_TO_AUGMENT = ['Argument', 'Statute', 'Precedent', 'RulingByLowerCourt', 'RulingByPresentCourt'] # for malik dataset
-#CLASSES_TO_AUGMENT = ['Fact', 'RulingByPresentCourt', 'RatioOfTheDecision'] # for facts dataset
-CLASSES_TO_AUGMENT = [] # when we don't want mixup vectors
+#CLASSES_TO_AUGMENT = ['Argument', 'Statute', 'Precedent', 'RulingByLowerCourt', 'RulingByPresentCourt'] # for 7_roles dataset
+CLASSES_TO_AUGMENT = ['Fact', 'RulingByPresentCourt', 'RatioOfTheDecision'] # for 4_roles dataset
+#CLASSES_TO_AUGMENT = [] # when we don't want mixup vectors
 
 N_EPOCHS_ENCODER = 4
-#STOP_EPOCH_ENCODER = 1
-STOP_EPOCH_ENCODER = 0
+STOP_EPOCH_ENCODER = 1
 LEARNING_RATE_ENCODER = 1e-5
 
 N_EPOCHS_CLASSIFIER = 200

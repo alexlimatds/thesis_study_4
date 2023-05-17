@@ -7,7 +7,7 @@ EMBEDDING_DIM = 768  # hidden dim of transformer encoder
 BATCH_SIZE = 16
 DROPOUT_RATE = 0.2
 
-DATASET = 'facts' # 'malik' or 'facts'
+DATASET = '4_roles' # '7_roles' or '4_roles'
 
 N_EPOCHS_ENCODER = 4
 STOP_EPOCH_ENCODER = 2

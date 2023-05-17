@@ -1,7 +1,7 @@
 from os import listdir
 import pandas as pd
 import numpy as np
-import csv, random, torch, dfcsc_cls_models, transformers, time, json, malik, facts
+import random, torch, dfcsc_cls_models, transformers, time, data_manager
 from datetime import datetime
 
 def evaluate_model(train_params):
@@ -10,13 +10,9 @@ def evaluate_model(train_params):
     time_tag = f'DFCSC-CLS_{model_reference}_{datetime.now().strftime("%Y-%m-%d-%Hh%Mm%Ss")}'
     train_params['time_tag'] = time_tag
     
+    # loading dataset
     dataset_name = train_params['dataset']
-    if dataset_name == 'malik':
-        data_loader = malik.Malik()
-    elif dataset_name == 'facts':
-        data_loader = facts.Facts()
-    else:
-        raise ValueError('Invalid dataset:', dataset_name)
+    data_loader = data_manager.get_data_manager(dataset_name)
     
     # setting labels
     labels_to_idx = data_loader.get_labels_to_idx()

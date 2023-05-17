@@ -8,7 +8,7 @@ LEARNING_RATE = 1e-5
 BATCH_SIZE = 16
 DROPOUT_RATE = 0.2
 
-DATASET = 'facts' # 'malik' or 'facts'
+DATASET = '4_roles' # '7_roles' or '4_roles'
 N_EPOCHS = 4
 
 train_params = {}

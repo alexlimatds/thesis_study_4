@@ -1,7 +1,7 @@
 import json, ast
 import pandas as pd
 
-class Malik:
+class OriginalDM:
     def raw_to_dic_docs(self, raw_data):
         '''
         Converts JSON to dictionaries with pandas dataframes.
@@ -78,7 +78,7 @@ class Malik:
 
 def main():
     # A simple test
-    o = Malik()
+    o = OriginalDM()
     train, _, _ = o.get_data()
     labels = set()
     for _, df in train.items():

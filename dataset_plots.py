@@ -1,4 +1,4 @@
-import malik, facts, dm_original
+import data_manager
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -58,9 +58,9 @@ def plot_single(title, ax, count_df):
   #ax.set_xscale('log')
 
 def main():
-    count_df_original = get_count_df(dm_original.Malik())
-    count_df_malik = get_count_df(malik.Malik())
-    count_df_4_labels = get_count_df(facts.Facts())
+    count_df_original = get_count_df(data_manager.get_data_manager('original'))
+    count_df_malik = get_count_df(data_manager.get_data_manager('7_roles'))
+    count_df_4_labels = get_count_df(data_manager.get_data_manager('4_roles'))
     
     # ploting
     fig = plt.figure(figsize=(15, 4))
